@@ -13,9 +13,8 @@ class GetURLStatus(threading.Thread):
 		self.condition = condition
 		self.resultWriter = resultWriter
 
-	def console(self, url, status, msgType="INFO"):
+	def output(self, url, status):
 		self.condition.acquire()
-		print("[" + msgType + "]" + " url: " + url + ", status: " + status)
 		self.resultWriter.write(url + ", " + status + "\n")
 		self.condition.release()
 
@@ -28,7 +27,8 @@ class GetURLStatus(threading.Thread):
 			response = urllib.request.urlopen(url)
 			statusDict = {"url": url, "status": str(response.code)}
 		except http.client.BadStatusLine as e:
+			#this exception always means that your network connection has a problem.
 			statusDict = {"url:": url, "status": "unknown"}
 		except Exception as e:
 			statusDict = {"url": url, "status": str(e.code)}
-		self.console(statusDict["url"], statusDict["status"])
+		self.output(statusDict["url"], statusDict["status"])
