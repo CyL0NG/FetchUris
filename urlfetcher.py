@@ -136,14 +136,15 @@ def main():
     #init thread pool
     pool = ThreadPool(args.thread_num)
     
-    #init counter
-    counter = 0
     for url in url_data.get_urls():
         pool.add_task(url_request, url)
-        counter += 1
-        console.show_progress(counter, url_amount)
+        console.show_progress(pool.get_progress(), url_amount)
     
-    pool.destroy()
+    while pool.get_progress() != url_amount:
+        console.show_progress(pool.get_progress(), url_amount)
+    
+
+    #pool.destroy()
     finish_time = time.time()
     elapsed_time = int(finish_time - start_time)
     #export

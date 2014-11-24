@@ -103,6 +103,9 @@ class ThreadPool():
         for etyp, err in self._get_results(self.err_queue):
             print 'Error:', etyp, err
 
+    def get_progress(self):
+        return self.out_queue.qsize() + self.err_queue.qsize()
+
     def destroy(self):
         # order is important: first, request all threads to stop...:
         for i in self.workers:
